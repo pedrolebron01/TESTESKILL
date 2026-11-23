@@ -1,0 +1,72 @@
+/* ============================================================
+   DESVENDA — Versão SEM a Skill (Abordagem Tradicional)
+   
+   Características desta abordagem sem a skill:
+   - Cores hardcoded fixas (hexadecimal e classes utilitárias diretas)
+   - Sem arquitetura de CSS Variables semânticas (--primary, --background, etc.)
+   - Sem mapeamento @theme inline
+   - Classes longas e repetitivas espalhadas pelo HTML e JS
+   - Dificuldade para manter temas e consistência de contraste
+   ============================================================ */
+
+body {
+  margin: 0;
+  background-color: #0b0e14;
+  color: #f1f5f9;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* Fundo estilizado com gradiente fixo */
+.bg-gradient-custom {
+  background: radial-gradient(circle at 50% 10%, rgba(147, 51, 234, 0.15), transparent 40%),
+              radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.12), transparent 40%),
+              #0b0e14;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Toast */
+.toast-msg {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  z-index: 200;
+  transition: transform 0.3s ease;
+  font-weight: 500;
+}
+
+.toast-msg.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Animações simples */
+@keyframes shakeAnimation {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shakeAnimation 0.3s ease;
+}

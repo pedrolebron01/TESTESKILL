@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DESVENDA (Versão Sem a Skill)</title>
+  <!-- Tailwind via CDN padrão -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gradient-custom min-h-screen text-slate-100">
+  <div id="toast" class="toast-msg"></div>
+
+  <!-- Header -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md px-4 py-3 sticky top-0 z-50">
+    <div class="max-w-xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl">🧩</span>
+        <span class="text-xl font-extrabold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          DESVENDA
+        </span>
+        <span class="text-xs bg-rose-950/60 text-rose-300 border border-rose-800/60 px-2 py-0.5 rounded-full ml-2">
+          Sem Skill
+        </span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button onclick="openModal('rulesModal')" class="p-2 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-lg text-sm transition">
+          ❓ Regras
+        </button>
+        <button onclick="showStatsModal()" class="p-2 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-lg text-sm transition">
+          📊 Stats
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="max-w-xl mx-auto px-4 py-6">
+    <!-- Hero -->
+    <div class="text-center my-6">
+      <h1 class="text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-indigo-300 to-blue-400 bg-clip-text text-transparent">
+        DESVENDA
+      </h1>
+      <p class="text-slate-400 text-sm mt-1 italic">Uma palavra. Infinitas possibilidades.</p>
+      <div class="mt-3">
+        <span id="dayBadge" class="inline-block bg-purple-900/40 text-purple-300 border border-purple-700/50 text-xs px-3 py-1 rounded-full font-medium">
+          Desafio #1
+        </span>
+      </div>
+    </div>
+
+    <!-- Card de Tentativas -->
+    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-xl mb-4">
+      <div class="flex space-x-2">
+        <input 
+          type="text" 
+          id="guessInput" 
+          placeholder="Digite uma palavra..." 
+          class="flex-1 bg-slate-800/90 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500 transition"
+        >
+        <button 
+          id="submitBtn" 
+          onclick="submitGuess()" 
+          class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold px-5 py-2.5 rounded-lg shadow-md transition transform active:scale-95"
+        >
+          Tentar
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-800/80 text-xs">
+        <div class="flex space-x-2">
+          <button onclick="showHint()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded border border-slate-700 transition">
+            💡 Dica
+          </button>
+          <button onclick="giveUp()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded border border-slate-700 transition">
+            🏳️ Desistir
+          </button>
+          <button onclick="newGame()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded border border-slate-700 transition">
+            🔄 Novo
+          </button>
+        </div>
+        <span class="text-slate-400 font-medium">
+          <span id="guessCount" class="text-purple-400 font-bold">0</span> tentativas
+        </span>
+      </div>
+
+      <div id="hintArea"></div>
+    </div>
+
+    <!-- Lista de Palavras -->
+    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-xl">
+      <div id="emptyState" class="text-center py-8">
+        <div class="text-3xl mb-2 opacity-50">🔍</div>
+        <p class="text-slate-400 text-sm">Digite uma palavra para começar!</p>
+      </div>
+      <div id="guessList" class="space-y-2"></div>
+    </div>
+  </main>
+
+  <!-- Modal Regras -->
+  <div id="rulesModal" class="modal-overlay">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-slate-100">📖 Regras do Jogo</h3>
+        <button onclick="closeModal('rulesModal')" class="text-slate-400 hover:text-slate-100">✕</button>
+      </div>
+      <p class="text-sm text-slate-300 leading-relaxed mb-4">
+        Descubra a palavra secreta! A cada tentativa, o jogo informa sua posição no ranking de proximidade:
+      </p>
+      <div class="space-y-1.5 text-xs mb-4">
+        <div class="p-2 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-800/40">🔥 #1 a #10: Muito perto</div>
+        <div class="p-2 rounded bg-lime-950/40 text-lime-400 border border-lime-800/40">☀️ #11 a #50: Perto</div>
+        <div class="p-2 rounded bg-amber-950/40 text-amber-400 border border-amber-800/40">🌤️ #51 a #200: Morno</div>
+        <div class="p-2 rounded bg-orange-950/40 text-orange-400 border border-orange-800/40">❄️ #201 a #500: Frio</div>
+        <div class="p-2 rounded bg-rose-950/40 text-rose-400 border border-rose-800/40">🥶 #501+: Muito longe</div>
+      </div>
+      <button onclick="closeModal('rulesModal')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2 rounded-lg text-sm">
+        Entendi!
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Stats -->
+  <div id="statsModal" class="modal-overlay">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-sm w-full mx-4 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-slate-100">📊 Estatísticas</h3>
+        <button onclick="closeModal('statsModal')" class="text-slate-400 hover:text-slate-100">✕</button>
+      </div>
+      <div id="statsContent"></div>
+      <button onclick="closeModal('statsModal')" class="w-full mt-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2 rounded-lg text-sm">
+        Fechar
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Vitória -->
+  <div id="victoryModal" class="modal-overlay">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-sm w-full mx-4 shadow-2xl text-center">
+      <div class="text-5xl mb-3">🏆</div>
+      <h3 class="text-xl font-bold text-slate-100 mb-1">Parabéns!</h3>
+      <p class="text-sm text-slate-400 mb-4">Você descobriu a palavra secreta!</p>
+      <button onclick="closeModal('victoryModal'); newGame();" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold py-2 rounded-lg text-sm">
+        Jogar Novamente
+      </button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
